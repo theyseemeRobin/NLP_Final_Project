@@ -1,0 +1,9 @@
+batch_size: 29
+context_window: 256
+freeze_weights: false
+learning_rate: 2.364353486959504e-05
+model: roberta-base
+n_epochs: 10
+test_batch_size: 29
+warmup_fraction: 0.3655321519885537
+weight_decay: 0.03770978292849532

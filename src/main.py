@@ -20,11 +20,12 @@ parser.add_argument("--tune", action="store_true",
 parser.add_argument("--run-id", type=str, default=run_id,
                     help="Name of the current run (default is current date/time in Month_Day_Hrs_Min_Sec). "
                          "Results are stored at data/results/<run-id>")
-parser.add_argument("--train-data", type=str, default="data/raw/train.json",
+parser.add_argument("--train-data", type=str, default="F:/University/Courses/NLP/Assignments/Assignment_3/NLP_Final_Project/data/raw/train.json",
                     help="Path of the CSV file that contains the training data")
-parser.add_argument("--test-data", type=str, default="data/raw/test.json",
+parser.add_argument("--test-data", type=str, default="F:/University/Courses/NLP/Assignments/Assignment_3/NLP_Final_Project/data/raw/test.json",
                     help="Path of the CSV file that contains the test data")
-parser.add_argument("--config", type=str, default="data/config.yaml",
+parser.add_argument("--config", type=str, default="F:/University/Courses/NLP/Assignments/Assignment_3"
+                                                  "/NLP_Final_Project/data/config.yaml",
                     help="Path of the file that contains the hyperparameters")
 args = parser.parse_args()
 
