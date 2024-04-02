@@ -127,3 +127,7 @@ def token_f1_score(pred, true):
     f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 
     return f1_score
+
+
+def fetch_device():
+    return 'cuda' if torch.cuda.is_available() else 'cpu'

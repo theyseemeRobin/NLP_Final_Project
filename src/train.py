@@ -12,7 +12,6 @@ from my_util import token_f1_score
 
 Metrics = namedtuple("metrics", ("f1_score", "em_score"))
 
-
 def train_classifier(
         model,
         config,
@@ -148,6 +147,12 @@ def eval_classifier(
     )
 
     test_batch_losses = []
+    pred_answers = []
+    true_answers = []
+    text_pred_answers = []
+    text_true_answers = []
+    f1_scores = []
+    em_scores = []
     with progress:
 
         # Testing
@@ -163,22 +168,15 @@ def eval_classifier(
             test_batch_losses.append(loss.cpu().numpy())
             progress.update(testing, advance=1)
 
-            pred_answers = []
-            true_answers = []
-            text_pred_answers = []
-            text_true_answers = []
-            f1_scores = []
-            em_scores = []
             for idx, (start, end, true_start, true_end) in enumerate(zip(start_idx, end_idx, batch["start_positions"], batch["end_positions"])):
-                text_true_answers.append(tokenizer.decode(batch["input_ids"][idx][true_start:true_end + 1]))
-                true_answers.append(batch["input_ids"][idx][true_start:true_end + 1])
-                text_pred_answers.append(tokenizer.decode(batch["input_ids"][idx][start:end + 1]))
-                pred_answers.append(batch["input_ids"][idx][start:end + 1])
                 if end - start < 0 or end < 0 or start < 0:
                     start = end = 0
+                text_pred_answers.append(tokenizer.decode(batch["input_ids"][idx][start:end + 1]))
+                text_true_answers.append(tokenizer.decode(batch["input_ids"][idx][true_start:true_end + 1]))
+                pred_answers.append(batch["input_ids"][idx][start:end + 1])
+                true_answers.append(batch["input_ids"][idx][true_start:true_end + 1])
                 f1_scores.append(token_f1_score(pred_answers[-1].cpu().tolist(), true_answers[-1].cpu().tolist()))
                 em_scores.append(int(pred_answers[-1].cpu().tolist() == true_answers[-1].cpu().tolist()))
-                print(f"Prediction: {text_pred_answers[-1]}, Ground truth: {text_true_answers[-1]}")
 
         epoch_loss = np.mean(test_batch_losses[-len(eval_loader):])
 
