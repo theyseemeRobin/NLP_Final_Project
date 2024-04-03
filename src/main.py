@@ -13,7 +13,6 @@ from my_util import *
 from train import train_classifier
 
 
-
 parser = argparse.ArgumentParser(description="RoBERTa fine tuning for emotion classification.")
 run_id = datetime.now().strftime('%b_%d_%H_%M_%S')
 parser.add_argument("--tune", action="store_true",
@@ -22,11 +21,11 @@ parser.add_argument("--tune", action="store_true",
 parser.add_argument("--run-id", type=str, default=run_id,
                     help="Name of the current run (results are stored at data/results/<run-id>)")
 parser.add_argument("--train-data", type=str, default="data/raw/train.json",
-                    help="Path of the CSV file that contains the training data")
+                    help="Path of the JSON file that contains the training data")
 parser.add_argument("--test-data", type=str, default="data/raw/test.json",
-                    help="Path of the CSV file that contains the test data")
+                    help="Path of the JSON file that contains the test data")
 parser.add_argument("--config", type=str, default="data/config.yaml",
-                    help="Path of the file that contains the hyperparameters")
+                    help="Path of the file that contains the hyperparameters or their tuning configurations.")
 args = parser.parse_args()
 
 
@@ -56,7 +55,7 @@ def main(run_config, save_dir, trial=None):
         Dictionary that contains the hyperparameters, or the tuning information when tuning.
     trial : optuna.Trial
     save_dir : str
-        Path where the models are saved
+        Path where the models and results are saved
     Returns
     -------
     tuple :
@@ -121,7 +120,6 @@ if __name__ == "__main__":
 
     base_output_path = os.path.join("data", "results", f"{args.run_id}")
     print(f"Saving results to: {base_output_path}")
-    open_tensorboard(os.path.join(base_output_path, "tensorboard"))
 
     # Find the best hyperparameters through optuna
     if args.tune:
@@ -140,19 +138,21 @@ if __name__ == "__main__":
         config = best_trial.params
         config.update(hp_ranges['set'])
 
-    # Use the hyperparameters specified in the config file
+    # Or use the hyperparameters specified in the config file
     else:
         with open(args.config, 'r') as file:
             config = yaml.safe_load(file)
-
+    # Write the config to the output directory (so we can see which HP's are used later)
     with open(os.path.join(base_output_path, "hyperparameters.yaml"), 'w') as file:
         yaml.dump(config, file)
 
-    # Loop over each configuration
+    # Do a final training run with the selected HP's
     train_curve, test_curve, metrics = main(
         config,
         save_dir=os.path.join(base_output_path, "models"),
     )
+
+    # Plot results and show F1/EM scores
     plot_curves([train_curve, test_curve], base_output_path, "LossCurve", save_data=True)
     print(f"F1-score: {metrics[-1].f1_score}")
     print(f"EM-score: {metrics[-1].f1_score}")

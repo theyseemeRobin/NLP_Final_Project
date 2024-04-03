@@ -15,7 +15,7 @@ Bar = namedtuple("Bar", ("mean", "std", "tag"))
 Curve = namedtuple("Curve", ("time", "mean", "std", "tag"))
 
 
-def MakeCurve(mean=np.array([]), time=np.array([]), std=np.array([]), tag="Curve"):
+def MakeCurve(mean=np.array([]), time=np.array([]), std=np.array([]), tag="Curve") -> Curve:
     """
     Parameters
     ----------
@@ -23,9 +23,6 @@ def MakeCurve(mean=np.array([]), time=np.array([]), std=np.array([]), tag="Curve
     mean : np.ndarray
     std : np.ndarray
     tag : str
-    Returns
-    -------
-    Curve
     """
     if len(time) == 0 and len(mean) != 0:
         time = np.array([x for x, _ in enumerate(mean)])
@@ -93,10 +90,11 @@ def plot_curves(curves, save_path=None, name="", save_data=False):
 
 def open_tensorboard(log_dir, port=None):
     """
+    Starts a tensorboard log directory.
     Parameters
     ----------
-    port :
     log_dir : str
+    port : str
     """
     tb = program.TensorBoard()
     os.makedirs(log_dir, exist_ok=True)
@@ -108,8 +106,10 @@ def open_tensorboard(log_dir, port=None):
     print(f"Tensorflow listening on {port}")
 
 
-def token_f1_score(pred, true):
-    # Convert lists of integer tokens to sets
+def token_f1_score(pred, true) -> float:
+    """
+    Compute the f1 score between two sets of tokens
+    """
     pred_tokens = set(pred)
     true_tokens = set(true)
 

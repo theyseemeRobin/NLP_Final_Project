@@ -31,12 +31,15 @@ def load_data(json_path):
 class SquadData(Dataset):
     def __init__(self, json_path, tokenizer, max_tokens=256, stride=50, device=fetch_device()):
         """
+        Dataset class that loads and preprocesses data formatted like SQuAD v2.0
         Parameters
         ----------
         json_path : str
             Path to json file
         tokenizer : transformers.PreTrainedTokenizerFast
         max_tokens : int
+        stride : int
+        device : str
         """
         self.tokenizer = tokenizer
         self.max_tokens = max_tokens
@@ -45,9 +48,9 @@ class SquadData(Dataset):
         self.data = load_data(json_path=self.json_path)
 
         self.stride = stride
-        self.processed_data  = self.preprocess()
+        self.processed_data  = self._preprocess()
 
-    def preprocess(self):
+    def _preprocess(self):
         questions = [q.strip() for q in self.data["question"].tolist()]
         processed_data = self.tokenizer(
             questions,

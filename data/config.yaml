@@ -1,10 +1,9 @@
-# Best HP's for emotion classification, as found using optuna
 model : roberta-base
-test_batch_size : 29
+test_batch_size : 21
 context_window  : 256
-n_epochs: 10
-learning_rate: 0.00002364353486959504
-weight_decay: 0.03770978292849532
+n_epochs: 5
+learning_rate: 0.000004589316903764741
+weight_decay: 0.005791215786206499
 freeze_weights: False
-batch_size: 29
-warmup_fraction: 0.3655321519885537
+batch_size: 14
+warmup_fraction: 0.30940788803284475
