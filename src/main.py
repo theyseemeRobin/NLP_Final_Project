@@ -119,6 +119,7 @@ def main(run_config, save_dir, trial=None):
 if __name__ == "__main__":
 
     base_output_path = os.path.join("data", "results", f"{args.run_id}")
+    os.makedirs(base_output_path)
     print(f"Saving results to: {base_output_path}")
 
     # Find the best hyperparameters through optuna
